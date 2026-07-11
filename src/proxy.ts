@@ -8,10 +8,10 @@ const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
 const RATE_LIMIT = 50; // Requests per minute
 const WINDOW_MS = 60 * 1000;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Only apply rate limiting to /api/* routes
   if (request.nextUrl.pathname.startsWith('/api/')) {
-    const ip = request.ip ?? request.headers.get('x-forwarded-for') ?? 'unknown';
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
     const now = Date.now();
     
     let ipData = rateLimitMap.get(ip);

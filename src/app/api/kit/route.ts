@@ -28,6 +28,7 @@ export async function POST(req: Request) {
     `;
 
     const rawAiResponse = await generateActionableRecommendation(systemPrompt, "Provide JSON array only.");
+    if (!rawAiResponse) throw new Error("No response from AI");
     
     const match = rawAiResponse.match(/\[[\s\S]*\]/);
     if (!match) throw new Error("Failed to parse JSON");

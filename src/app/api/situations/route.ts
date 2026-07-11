@@ -56,6 +56,7 @@ export async function GET(req: Request) {
     `;
 
     const rawAiResponse = await generateActionableRecommendation(systemPrompt, "Provide JSON only.");
+    if (!rawAiResponse) throw new Error('No response from AI');
     
     // Extract JSON array robustly using Regex in case Gemini includes conversational text
     const match = rawAiResponse.match(/\[[\s\S]*\]/);

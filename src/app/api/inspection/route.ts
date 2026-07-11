@@ -1,14 +1,6 @@
 import { NextResponse } from 'next/server';
 import { analyzeImageForHazards } from '@/lib/gemini';
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
-};
-
 export async function POST(req: Request) {
   try {
     const { image } = await req.json();
@@ -39,9 +31,10 @@ export async function POST(req: Request) {
     `;
 
     const rawAiResponse = await analyzeImageForHazards(image, systemPrompt);
+    if (!rawAiResponse) throw new Error('No response from Vision AI');
     
     const match = rawAiResponse.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error("Failed to parse JSON");
+    if (!match) throw new Error('Failed to parse JSON from Vision AI response');
     const analysis = JSON.parse(match[0]);
 
     return NextResponse.json({ analysis }, { status: 200 });
