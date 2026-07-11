@@ -1,0 +1,148 @@
+.main {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.hero p {
+  font-size: 1.125rem;
+  color: var(--muted-foreground);
+  margin-bottom: 3rem;
+}
+
+.uploadSection {
+  margin-bottom: 3rem;
+}
+
+.uploadBox {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 4rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--card);
+  transition: border-color 0.2s, background-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.uploadBox:hover {
+  border-color: var(--primary);
+  background-color: var(--muted);
+}
+
+.uploadBox p {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--foreground);
+}
+
+.uploadBox span {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.previewContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: var(--radius);
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.errorText {
+  color: var(--destructive);
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.results {
+  animation: fadein 0.5s ease-out;
+}
+
+.summary {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.hazardsList h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+}
+
+.hazardItem {
+  background: var(--muted);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.hazardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.issueName {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.high {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.medium {
+  background-color: var(--warning);
+  color: var(--warning-foreground);
+}
+
+.low {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.recommendation {
+  color: var(--foreground);
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

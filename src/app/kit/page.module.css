@@ -1,0 +1,126 @@
+.main {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.hero p {
+  font-size: 1.125rem;
+  color: var(--muted-foreground);
+  margin-bottom: 3rem;
+}
+
+.formLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.inputSection {
+  background: var(--card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  max-width: 800px;
+}
+
+.inputSection h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputGroup label {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.generateBtn {
+  width: 100%;
+}
+
+.results {
+  animation: fadein 0.5s ease-out;
+}
+
+.results h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.kitCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.category {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+  font-weight: 700;
+}
+
+.badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.high {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.medium {
+  background: var(--warning);
+  color: var(--warning-foreground);
+}
+
+.low {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.reason {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,47 @@
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 3rem;
+}
+
+.navLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.link {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  color: var(--foreground);
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.link:hover {
+  background-color: var(--muted);
+}
+
+.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.active:hover {
+  background-color: var(--primary);
+}
