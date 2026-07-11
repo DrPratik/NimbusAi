@@ -1,22 +1,31 @@
 import { GoogleGenAI } from "@google/genai";
 
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("Missing GEMINI_API_KEY environment variable.");
+// Lazy initialization pattern — the client is only created when first needed at runtime.
+// This prevents the build-time crash when environment variables aren't yet injected
+// (e.g., during Docker `npm run build` on Render).
+let aiClient: GoogleGenAI | null = null;
+
+function getAiClient(): GoogleGenAI {
+  if (aiClient) return aiClient;
+  
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing GEMINI_API_KEY environment variable. Please set it in your deployment environment.");
+  }
+  
+  aiClient = new GoogleGenAI({ apiKey });
+  return aiClient;
 }
 
-// Initialize the Google GenAI client
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
-
 /**
- * Executes a prompt against Gemini 3.1 Flash-Lite ensuring strict constraints
+ * Executes a prompt against Gemini Flash-Lite ensuring strict constraints
  * as required by the Master Development Context (no hallucinations, actionable outputs).
  */
 export async function generateActionableRecommendation(systemPrompt: string, userContext: string) {
   try {
+    const ai = getAiClient();
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-flash-lite",
+      model: "gemini-2.0-flash-lite",
       contents: [
         {
           role: "user",
@@ -24,7 +33,6 @@ export async function generateActionableRecommendation(systemPrompt: string, use
         }
       ],
       config: {
-        // Enforce deterministic responses and grounding
         temperature: 0.1, 
         systemInstruction: "You are NimbusAI (Monsoon Guardian). You MUST end every response with actionable recommendations. If data is unavailable, say 'I don't currently have enough verified information.' Never hallucinate.",
       }
@@ -42,11 +50,12 @@ export async function generateActionableRecommendation(systemPrompt: string, use
  */
 export async function analyzeImageForHazards(base64Image: string, systemPrompt: string) {
   try {
+    const ai = getAiClient();
     // Strip the data:image prefix if present
     const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
     
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-flash-lite",
+      model: "gemini-2.0-flash-lite",
       contents: [
         {
           role: "user",
