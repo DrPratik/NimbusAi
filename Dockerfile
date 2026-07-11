@@ -1,62 +1,78 @@
-FROM node:20-alpine AS base
+# Base image
+FROM node:20-bookworm-slim AS base
 
-# Install dependencies only when needed
+# ===========================
+# Install dependencies
+# ===========================
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# Install OpenSSL required by Prisma
+RUN apt-get update \
+    && apt-get install -y openssl \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY package.json package-lock.json* ./
+
 RUN npm ci
 
-# Rebuild the source code only when needed
+# ===========================
+# Build application
+# ===========================
 FROM base AS builder
+
 WORKDIR /app
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma Client
 RUN npx prisma generate
 
-# Build Next.js
-# Ensure output: 'standalone' is set in next.config.ts
+# Disable Next.js telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# Build Next.js standalone app
 RUN npm run build
 
-# Production image, copy all the files and run next
+# ===========================
+# Production image
+# ===========================
 FROM base AS runner
+
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
 
-# Install openssl required by Prisma on Alpine Linux
-RUN apk add --no-cache openssl
+# Install OpenSSL for Prisma runtime
+RUN apt-get update \
+    && apt-get install -y openssl \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Create non-root user
+RUN groupadd --system --gid 1001 nodejs \
+    && useradd --system --uid 1001 --gid nodejs nextjs
 
+# Copy public assets
 COPY --from=builder /app/public ./public
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+# Create Next.js cache directory
+RUN mkdir .next && chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
+# Copy standalone build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+
+# Copy static assets
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy SQLite database schema if needed for runtime, though usually Prisma Client binds it.
+# Copy Prisma schema (optional but recommended)
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT=3000
-
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
 CMD ["node", "server.js"]
